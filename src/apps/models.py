@@ -1,11 +1,15 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 
 class Customer(models.Model):
+	user = models.OneToOneField(User,null=True, on_delete=models.CASCADE)
 	name=models.CharField(max_length=200, null=True)
+	email=models.CharField(max_length=200,null=True)
 	phone=models.CharField(max_length=10, null=False)
 	address=models.CharField(max_length=100)
+	profile_pic = models.ImageField(upload_to='static/image',null=True,blank=True, default='sanji.jpg')
 	date_created=models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):

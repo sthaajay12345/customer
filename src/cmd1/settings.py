@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps',
+    'apps.apps.AppsConfig',
     'django_filters',
 ]
 
@@ -124,4 +124,14 @@ MEDIA_URL = '/image/'
 
 STATICFILES_DIRS=[
 os.path.join(BASE_DIR,'static')]
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'static/image')
+
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER='ajaystha1000@gmail.com'
+EMAIL_HOST_PASSWORD ='bbaas100'
+DEFAULT_FROM_EMAIL='ajaystha1000@gmail.com'
 

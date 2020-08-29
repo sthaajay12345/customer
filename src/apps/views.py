@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect,Http404
 from django.forms import inlineformset_factory
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
@@ -91,8 +92,9 @@ def user_register(request):
 		if form.is_valid():
 			user=form.save()
 			username = form.cleaned_data.get('username')
-			group=Group.objects.get(name='customer')
-			user.groups.add(group)
+			
+			
+	
 			messages.success(request,'Account was create for  ' + username)
 			return redirect('apps:login')
 	context={'form':form}
@@ -126,6 +128,27 @@ def logoutuser(request):
 	return redirect('apps:login')
 
 
+@login_required(login_url = 'apps:login')
+@allowed_users(allowed_roles=['customer'])
 def userpage(request):
-	context={}
+	orders=request.user.customer.order_set.all()
+
+	total_order=orders.count()
+	delivered=orders.filter(status='Delivered').count()
+	pending=orders.filter(status='Pending').count()
+	
+	context={'order':orders, 'total_order':total_order, 'delivered':delivered, 'pending':pending }
 	return render(request,'user.html',context)
+
+
+@login_required(login_url = 'apps:login')
+@allowed_users(allowed_roles=['customer'])
+def account_setting(request):
+	customer=request.user.customer
+	form=CustomerForm(instance=customer)
+	if request.method =='POST':
+		form = CustomerForm(request.POST, request.FILES,instance=customer)
+		if form.is_valid():
+			form.save()
+	context={'form':form,'customer':customer}
+	return render(request,'account_setting.html',context)
