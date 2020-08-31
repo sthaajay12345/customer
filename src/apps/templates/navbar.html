@@ -24,10 +24,20 @@
         <a class="nav-link" href="{% url 'apps:product' %}">Product</a>
       </li>
       {% else %}
+
        <li class="nav-item">
         <a class="nav-link" href="{% url 'apps:account_setting' %}">Setting</a>
       </li>
+            
      {% endif %}
+     {% if customer %} 
+     <li class="nav-item">
+        <a class="nav-link" href="{% url 'apps:create_order' customer.id %}">place order</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'apps:customer' customer.id %}">profile check</a>
+      </li>
+     {% endif%}
     </ul>
   </div>
   <span class="hello-msg">hello, {{request.user }}</span>

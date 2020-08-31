@@ -34,7 +34,7 @@ def product(request):
 	return render(request, 'product.html', {'product':products})
 
 @login_required(login_url = 'apps:login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['customer'])
 def customer(request, pk):
 	customer = Customer.objects.get(id=pk)
 	orders = customer.order_set.all()
@@ -45,9 +45,9 @@ def customer(request, pk):
 	return render(request, 'customer.html',context)
 	
 @login_required(login_url = 'apps:login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['customer'])
 def createOrder(request,pk):
-	OrderFormSet= inlineformset_factory(Customer,Order, fields=('product','status'))
+	OrderFormSet= inlineformset_factory(Customer,Order, fields=('product','quantity'))
 	customer = Customer.objects.get(id=pk)
 	formset = OrderFormSet(queryset=Order.objects.none(),instance=customer)
 	if request.method == 'POST':
@@ -59,15 +59,15 @@ def createOrder(request,pk):
 	return render(request, 'order_form.html', context)
 
 @login_required(login_url = 'apps:login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin' or 'customer'])
 def updateOrder(request, pk ):
 	order=get_object_or_404(Order,id=pk)
-	form = OrderForm(request.POST or None, request.FILES or None, instance=order)
-	if form.is_valid():
-		form.save()
+	formset = OrderForm(request.POST or None, request.FILES or None, instance=order)
+	if formset.is_valid():
+		formset.save()
 		return redirect('apps:home')
 
-	context={'forms':form}
+	context={'formset':formset}
 	return render(request, 'order_form.html', context)
 
 
@@ -131,6 +131,7 @@ def logoutuser(request):
 @login_required(login_url = 'apps:login')
 @allowed_users(allowed_roles=['customer'])
 def userpage(request):
+
 	orders=request.user.customer.order_set.all()
 
 	total_order=orders.count()
@@ -150,5 +151,6 @@ def account_setting(request):
 		form = CustomerForm(request.POST, request.FILES,instance=customer)
 		if form.is_valid():
 			form.save()
+			return render(request,'customer.html')
 	context={'form':form,'customer':customer}
 	return render(request,'account_setting.html',context)

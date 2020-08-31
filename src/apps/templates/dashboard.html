@@ -37,6 +37,7 @@
 					<th>Product</th>
 					<th>Date Order</th>
 					<th>Status</th>
+					<th>Quantity</th>
 					<th>Update</th>
 					<th>Remove</th>
 				</tr>
@@ -45,6 +46,7 @@
 					<td>{{ i.product}}</td>
 					<td>{{ i.date_created}}</td>
 					<td>{{ i.status}}</td>
+					<td>{{ i.quantity}}</td>
 					<td><a class = "btn btn-sm btn-info" href="{% url 'apps:update_order' i.id %}">Update</a></td>
 					<td><a class = "btn btn-sm btn-danger" href="{% url 'apps:delete_order' i.id %}">Delete</a></td>
 					
